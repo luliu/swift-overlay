@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<repositories version="1.0">
+	<repo quality="experimental" status="unofficial">
+		<name>swift-overlay</name>
+		<description lang="en">Personal overlay of Apple's Swift programming language ebuild</description>
+		<homepage>https://github.com/luliu/swift-overlay</homepage>
+		<owner type="person">
+			<email>b2bsgm@gmail.com</email>
+			<name>Lu Liu</name>
+		</owner>
+		<source type="git">https://github.com/luliu/swift-overlay.git</source>
+		<feed>https://github.com/luliu/swift-overlay/commits/main.atom</feed>
+	</repo>
+</repositories>
