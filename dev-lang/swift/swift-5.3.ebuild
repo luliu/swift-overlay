@@ -8,7 +8,8 @@ inherit multilib-minimal
 DESCRIPTION="Swift programming language from Apple"
 HOMEPAGE="www.swift.org"
 
-SRC_URI="https://api.github.com/repos/apple/swift/tarball/main -> swift-main.tar
+if [[ ${PV} == "9999" ]] ; then
+	SRC_URI="https://api.github.com/repos/apple/swift/tarball/main -> swift-main.tar
 			https://api.github.com/repos/apple/swift-cmark/tarball/main -> swift-cmark-main.tar
 			https://api.github.com/repos/apple/swift-llbuild/tarball/main -> swift-llbuild-main.tar
 			https://api.github.com/repos/apple/swift-argument-parser/tarball/0.3.0 -> swift-argument-parser-0.3.0.tar
@@ -26,6 +27,26 @@ SRC_URI="https://api.github.com/repos/apple/swift/tarball/main -> swift-main.tar
 			https://api.github.com/repos/apple/sourcekit-lsp/tarball/main -> sourcekit-lsp-main.tar
 			https://api.github.com/repos/apple/swift-format/tarball/main -> swift-format-main.tar
 			https://api.github.com/repos/apple/llvm-project/tarball/swift/main -> llvm-project-main.tar"
+else
+	SRC_URI="https://api.github.com/repos/apple/swift/tarball/release/${PV} -> swift-${PV}.tar
+			https://api.github.com/repos/apple/swift-cmark/tarball/release/${PV} -> swift-cmark-${PV}.tar
+			https://api.github.com/repos/apple/swift-llbuild/tarball/release/${PV} -> swift-llbuild-${PV}.tar
+			https://api.github.com/repos/apple/swift-argument-parser/tarball/0.3.0 -> swift-argument-parser-0.3.0.tar
+			https://api.github.com/repos/apple/swift-driver/tarball/main -> swift-driver-main.tar
+			https://api.github.com/repos/apple/swift-tools-support-core/tarball/release/${PV} -> swift-tools-support-core-${PV}.tar
+			https://api.github.com/repos/apple/swift-package-manager/tarball/release/${PV} -> swift-package-manager-${PV}.tar
+			https://api.github.com/repos/apple/swift-syntax/tarball/release/${PV} -> swift-syntax-${PV}.tar
+			https://api.github.com/repos/apple/swift-stress-tester/tarball/release/${PV} -> swift-stress-tester-${PV}.tar
+			https://api.github.com/repos/apple/swift-corelibs-xctest/tarball/release/${PV} -> swift-corelibs-xctest-${PV}.tar
+			https://api.github.com/repos/apple/swift-corelibs-foundation/tarball/release/${PV} -> swift-corelibs-foundation-${PV}.tar
+			https://api.github.com/repos/apple/swift-corelibs-libdispatch/tarball/release/${PV} -> swift-corelibs-libdispatch-${PV}.tar
+			https://api.github.com/repos/apple/swift-integration-tests/tarball/release/${PV} -> swift-integration-tests-${PV}.tar
+			https://api.github.com/repos/jpsim/Yams/tarball/3.0.1 -> yams-3.0.1.tar
+			https://api.github.com/repos/apple/indexstore-db/tarball/release/${PV} -> indexstore-db-${PV}.tar
+			https://api.github.com/repos/apple/sourcekit-lsp/tarball/release/${PV} -> sourcekit-lsp-${PV}.tar
+			https://api.github.com/repos/apple/swift-format/tarball/main -> swift-format-main.tar
+			https://api.github.com/repos/apple/llvm-project/tarball/swift/release/${PV} -> llvm-project-${PV}.tar"
+fi
 
 S=${WORKDIR}
 
@@ -93,18 +114,17 @@ multilib_src_configure() {
 		elog "Using Foundation"
 	fi
 	BARGS="-R ${USE_LLDB} ${USE_FOUNDATION} --skip-ios --skip-watchos --skip-tvos --swift-darwin-supported-archs \"x86_64\" --skip-build-benchmarks --llvm-targets-to-build X86"
-	./swift/utils/build-script ${BARGS} -S
 }
 
 multilib_src_compile() {
 	elog "${BARGS}"
 	cd ${WORKDIR}
-	./swift/utils/build-script ${BARGS}
+	./swift/utils/build-script ${BARGS} || die
 }
 
 multilib_src_install() {
 	${WORKDIR}/swift/utils/build-script ${BARGS} \
-										--install-all --install-destdir "${D}"
+											--install-all --install-destdir "${D}" || die
 	mkdir ${D}/usr/lib64
 	local FROM=${D}/usr/lib
 	local TO=${D}/usr/lib64
