@@ -119,7 +119,7 @@ multilib_src_configure() {
 multilib_src_compile() {
 	elog "${BARGS}"
 	cd ${WORKDIR}
-	./swift/utils/build-script ${BARGS} || die
+	./swift/utils/build-script ${BARGS}
 }
 
 multilib_src_install() {
