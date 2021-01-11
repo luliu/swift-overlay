@@ -9,9 +9,9 @@ DESCRIPTION="Swift programming language from Apple"
 HOMEPAGE="www.swift.org"
 
 if [[ ${PV} == "9999" ]] ; then
-	SRC_URI="https://api.github.com/repos/apple/swift/tarball/main -> swift-main.tar
-			https://api.github.com/repos/apple/swift-cmark/tarball/main -> swift-cmark-main.tar
-			https://api.github.com/repos/apple/swift-llbuild/tarball/main -> swift-llbuild-main.tar
+	SRC_URI="https://github.com/apple/swift/archive/swift-DEVELOPMENT-SNAPSHOT-2021-01-09-a.tar.gz -> swift-main.tar.gz
+			https://github.com/apple/swift-cmark/archive/swift-DEVELOPMENT-SNAPSHOT-2021-01-09-a.tar.gz -> swift-cmark-main.tar.gz
+			https://github.com/apple/swift-llbuild/archive/swift-DEVELOPMENT-SNAPSHOT-2021-01-09-a.tar.gz -> swift-llbuild-main.tar.gz
 			https://api.github.com/repos/apple/swift-argument-parser/tarball/0.3.0 -> swift-argument-parser-0.3.0.tar
 			https://api.github.com/repos/apple/swift-driver/tarball/main -> swift-driver-main.tar
 			https://api.github.com/repos/apple/swift-tools-support-core/tarball/main -> swift-tools-support-core-main.tar
@@ -32,7 +32,7 @@ else
 			https://api.github.com/repos/apple/swift-cmark/tarball/release/${PV} -> swift-cmark-${PV}.tar
 			https://api.github.com/repos/apple/swift-llbuild/tarball/release/${PV} -> swift-llbuild-${PV}.tar
 			https://api.github.com/repos/apple/swift-argument-parser/tarball/0.3.0 -> swift-argument-parser-0.3.0.tar
-			https://api.github.com/repos/apple/swift-driver/tarball/main -> swift-driver-main.tar
+			https://api.github.com/repos/apple/swift-driver/tarball/release/${PV} -> swift-driver-${PV}.tar
 			https://api.github.com/repos/apple/swift-tools-support-core/tarball/release/${PV} -> swift-tools-support-core-${PV}.tar
 			https://api.github.com/repos/apple/swift-package-manager/tarball/release/${PV} -> swift-package-manager-${PV}.tar
 			https://api.github.com/repos/apple/swift-syntax/tarball/release/${PV} -> swift-syntax-${PV}.tar
