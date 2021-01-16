@@ -68,7 +68,8 @@ DEPEND="${PYTHON_DEPS}
 		"
 RDEPEND="${DEPEND}
 		repl? ( dev-libs/libedit
-				!!dev-util/lldb )
+				!!dev-util/lldb
+				!!sys-devel/lld )
 		"
 BDEPEND="${DEPEND}
 		dev-vcs/git
