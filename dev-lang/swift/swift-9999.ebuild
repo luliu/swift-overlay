@@ -69,7 +69,7 @@ DEPEND="${PYTHON_DEPS}
 RDEPEND="${DEPEND}
 		repl? ( dev-libs/libedit
 				!!dev-util/lldb
-				!!sys-devel/lld )
+				sys-devel/lld )
 		"
 BDEPEND="${DEPEND}
 		dev-vcs/git
@@ -147,5 +147,8 @@ multilib_src_install() {
 		ln -sf ../lib64/liblldb.so.10.0.0 liblldb.so.10
 		ln -sf ../lib64/liblldb.so.10.0.0
 	fi
+
+	cd ${D}/usr/bin
+	rm clang* lld ld64.lld lld-link wasm-ld ld.lld
 }
 
