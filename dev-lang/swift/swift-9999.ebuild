@@ -26,7 +26,7 @@ if [[ ${PV} == "9999" ]] ; then
 			https://api.github.com/repos/apple/indexstore-db/tarball/main -> indexstore-db-main.tar
 			https://api.github.com/repos/apple/sourcekit-lsp/tarball/main -> sourcekit-lsp-main.tar
 			https://api.github.com/repos/apple/swift-format/tarball/main -> swift-format-main.tar
-			https://api.github.com/repos/apple/llvm-project/tarball/swift/main -> llvm-project-main.tar"
+			https://api.github.com/repos/apple/llvm-project/tarball/apple/main -> llvm-project-main.tar"
 else
 	SRC_URI="https://api.github.com/repos/apple/swift/tarball/release/${PV} -> swift-${PV}.tar
 			https://api.github.com/repos/apple/swift-cmark/tarball/release/${PV} -> swift-cmark-${PV}.tar
