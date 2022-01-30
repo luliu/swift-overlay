@@ -16,34 +16,41 @@ LICENSE=""
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
 
-IUSE="repl icu"
+REQUIRED_USE="clang? ( !repl )"
+IUSE="repl icu clang"
 RESTRICT="repl? ( strip )"
 
 DEPEND="${PYTHON_DEPS}
-		sys-devel/clang
-		icu? ( dev-libs/icu-layoutex )
-		dev-util/systemtap
-		!!sys-devel/clang:10.0.0
+		!!sys-devel/clang:10
+		!!dev-lang/swift
 		"
 RDEPEND="${DEPEND}
-		repl? ( dev-libs/libedit )
+		clang? ( sys-devel/clang:13 )
+		repl? ( !!dev-util/lldb )
 		dev-lang/python:3.7
+		sys-devel/lld
+		icu? ( dev-libs/icu-layoutex )
+		dev-util/systemtap
 		"
 
 src_install() {
 	ZIPDIR=swift-${PV}-RELEASE-amazonlinux2
-	dobin ${WORKDIR}/${ZIPDIR}/usr/bin/clang-10
-	dobin ${WORKDIR}/${ZIPDIR}/usr/bin/clangd
+	if ! use clang; then
+		dobin ${WORKDIR}/${ZIPDIR}/usr/bin/clang-10
+		dobin ${WORKDIR}/${ZIPDIR}/usr/bin/clangd
 
-	dosym clang-10 /usr/bin/clang
-	dosym clang /usr/bin/clang++
-	dosym clang /usr/bin/clang-cl
-	dosym clang /usr/bin/clang-cpp
+		dosym clang-10 /usr/bin/clang
+		dosym clang /usr/bin/clang++
+		dosym clang /usr/bin/clang-cl
+		dosym clang /usr/bin/clang-cpp
+	fi
 
-	dobin ${WORKDIR}/${ZIPDIR}/usr/bin/lld
-	dobin ${WORKDIR}/${ZIPDIR}/usr/bin/lldb
-	dobin ${WORKDIR}/${ZIPDIR}/usr/bin/lldb-argdumper
-	dobin ${WORKDIR}/${ZIPDIR}/usr/bin/lldb-server
+	#dobin ${WORKDIR}/${ZIPDIR}/usr/bin/lld
+	if use repl; then
+		dobin ${WORKDIR}/${ZIPDIR}/usr/bin/lldb
+		dobin ${WORKDIR}/${ZIPDIR}/usr/bin/lldb-argdumper
+		dobin ${WORKDIR}/${ZIPDIR}/usr/bin/lldb-server
+	fi
 	dobin ${WORKDIR}/${ZIPDIR}/usr/bin/plutil
 	dobin ${WORKDIR}/${ZIPDIR}/usr/bin/repl_swift
 	dobin ${WORKDIR}/${ZIPDIR}/usr/bin/sourcekit-lsp
@@ -60,12 +67,11 @@ src_install() {
 	dobin ${WORKDIR}/${ZIPDIR}/usr/bin/swift-run
 	dobin ${WORKDIR}/${ZIPDIR}/usr/bin/swift-test
 
-	dosym lld /usr/bin/ld64.lld
-	dosym lld /usr/bin/ld64.lld
-	dosym lld /usr/bin/ld64.lld.darwinnew
-	dosym lld /usr/bin/ld.lld
-	dosym lld /usr/bin/lld-link
-	dosym lld /usr/bin/wasm-ld
+	#dosym lld /usr/bin/ld64.lld
+	#dosym lld /usr/bin/ld64.lld.darwinnew
+	#dosym lld /usr/bin/ld.lld
+	#dosym lld /usr/bin/lld-link
+	#dosym lld /usr/bin/wasm-ld
 	dosym swift-frontend /usr/bin/swift
 	dosym swift-frontend /usr/bin/swift-api-digester
 	dosym swift-frontend /usr/bin/swift-api-extract
@@ -77,35 +83,45 @@ src_install() {
 	doheader -r ${WORKDIR}/${ZIPDIR}/usr/include
 
 	dolib.so ${WORKDIR}/${ZIPDIR}/usr/lib/libIndexStore.so.10git
-	dolib.so ${WORKDIR}/${ZIPDIR}/usr/lib/liblldb.so.10.0.0git
 	dolib.so ${WORKDIR}/${ZIPDIR}/usr/lib/libsourcekitdInProc.so
 	dolib.so ${WORKDIR}/${ZIPDIR}/usr/lib/libswiftDemangle.so
+	if use repl; then
+		dolib.so ${WORKDIR}/${ZIPDIR}/usr/lib/liblldb.so.10.0.0git
+	fi
 
 	insinto /usr/lib
 	doins -r ${WORKDIR}/${ZIPDIR}/usr/lib/swift
 	doins -r ${WORKDIR}/${ZIPDIR}/usr/lib/swift_static
 
 	dosym libIndexStore.so.10git /usr/lib64/libIndexStore.so
-	dosym liblldb.so.10.0.0git /usr/lib64/liblldb.so.10git
-	dosym liblldb.so.10git /usr/lib64/liblldb.so
+	if use repl; then
+		dosym liblldb.so.10.0.0git /usr/lib64/liblldb.so.10git
+		dosym liblldb.so.10git /usr/lib64/liblldb.so
+	fi
 
 	dosym ../lib64/libIndexStore.so /usr/lib/libIndexStore.so
 	dosym ../lib64/libIndexStore.so.10git /usr/lib/libIndexStore.so.10git
-	dosym ../lib64/liblldb.so /usr/lib/liblldb.so
-	dosym ../lib64/liblldb.so.10.0.0git /usr/lib/liblldb.so.10.0.0git
-	dosym ../lib64/liblldb.so.10git /usr/lib/liblldb.so.10git
+	if use repl; then
+		dosym ../lib64/liblldb.so /usr/lib/liblldb.so
+		dosym ../lib64/liblldb.so.10.0.0git /usr/lib/liblldb.so.10.0.0git
+		dosym ../lib64/liblldb.so.10git /usr/lib/liblldb.so.10git
+	fi
 	dosym ../lib64/libsourcekitdInProc.so /usr/lib/libsourcekitdInProc.so
 	dosym ../lib64/libswiftDemangle.so /usr/lib/libswiftDemangle.so
 
-	# We need to fix symlink path to clang
-	#CLANG_VERSION=`clang --version | grep "clang version"`
-	#CLANG_VERSION_TOKEN=($CLANG_VERSION)
-	#dosym ../../lib/clang/${CLANG_VERSION_TOKEN[2]} /usr/lib64/swift/clang
-	#dosym ../../lib/clang/${CLANG_VERSION_TOKEN[2]} /usr/lib64/swift_static/clang
-
-	# Or use use Apple's Clang 10.0.0
-	insinto /usr/lib/clang/
-	doins -r ${WORKDIR}/${ZIPDIR}/usr/lib/clang/10.0.0
+	if use clang; then
+		# We need to fix symlink path to clang
+		CLANG_VERSION=`clang --version | grep "clang version"`
+		CLANG_VERSION_TOKEN=($CLANG_VERSION)
+		dosym ../../lib/clang/${CLANG_VERSION_TOKEN[2]} /usr/lib64/swift/clang
+		dosym ../../lib/clang/${CLANG_VERSION_TOKEN[2]} /usr/lib64/swift_static/clang
+		# Hard coded to 13 for now
+		dosym ../lib/llvm/13/bin/clang /usr/bin/clang
+	else
+		# Or use use Apple's built in Clang 10.0.0
+		insinto /usr/lib/clang/
+		doins -r ${WORKDIR}/${ZIPDIR}/usr/lib/clang/10.0.0
+	fi
 
 	insinto /usr/local
 	doins -r ${WORKDIR}/${ZIPDIR}/usr/local/include
