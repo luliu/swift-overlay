@@ -26,7 +26,8 @@ DEPEND="${PYTHON_DEPS}
 		"
 RDEPEND="${DEPEND}
 		clang? ( sys-devel/clang:13 )
-		repl? ( !!dev-util/lldb )
+		repl? ( !!dev-util/lldb
+				dev-libs/libedit )
 		dev-lang/python:3.7
 		sys-devel/lld
 		icu? ( dev-libs/icu-layoutex )
